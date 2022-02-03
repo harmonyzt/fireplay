@@ -2,8 +2,8 @@
 #include <fakemeta>
 
 new const PLUGIN[] = "Damager"
-new const VERSION[] = "2.0"
-new const AUTHOR[] = "Prayer"
+new const VERSION[] = "1.0"
+new const AUTHOR[] = "None"
 
 new g_MsgSync
 new g_MsgSync2

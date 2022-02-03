@@ -1,150 +1,3 @@
-/* AMX Mod X script.
-*
-*   Ultimate Gore Enhancement (amx_gore_ultimate.sma)
-*   Copyright (C) 2003-2004  mike_cao / fizzarum / jtp10181
-*
-*   This program is free software; you can redistribute it and/or
-*   modify it under the terms of the GNU General Public License
-*   as published by the Free Software Foundation; either version 2
-*   of the License, or (at your option) any later version.
-*
-*   This program is distributed in the hope that it will be useful,
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*   GNU General Public License for more details.
-*
-*   You should have received a copy of the GNU General Public License
-*   along with this program; if not, write to the Free Software
-*   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*   In addition, as a special exception, the author gives permission to
-*   link the code of this program with the Half-Life Game Engine ("HL
-*   Engine") and Modified Game Libraries ("MODs") developed by Valve,
-*   L.L.C ("Valve"). You must obey the GNU General Public License in all
-*   respects for all of the code used other than the HL Engine and MODs
-*   from Valve. If you modify this file, you may extend this exception
-*   to your version of the file, but you are not obligated to do so. If
-*   you do not wish to do so, delete this exception statement from your
-*   version.
-*
-****************************************************************************
-*
-*   Version 1.6 - 05/18/2008
-*
-*   by jtp10181 <jtp@jtpage.net>
-*   Homepage: http://www.jtpage.net
-*
-*   Original code by:
-*     by mike_cao <mike@mikecao.com> (plugin_gore)
-*     fizzarum <tntmr2gg2@icqmail.com> (plugin_gore2)
-*
-****************************************************************************
-*
-*   This plugin adds gore effects. It is configured
-*   with the cvar "amx_gore" using these flags:
-*
-*   a - Headshot blood
-*   b - Extra blood effects
-*   c - Bleeding on low health
-*   d - Gib explosion (Explosives and damage over "amx_gore_exphp")
-*   e - Extra Gory Mode
-*   f - Extra Headshot Gore Only (same as with flag "e")
-*   g - Hostage Gore (CS/CZ Only)
-*
-*   Default is: amx_gore "abcd"
-*
-*   New CVAR: amx_gore_exphp (default 160)
-*         The amount of health that must be lost upon death
-*         for the player to "explode"
-*
-*   Add the cvars to your amxx.cfg to change it and have it load every map
-*
-*   *NOTE*: the decal indexes are pulled form the servers decals.wad  If you
-*	do not have the orginal decals.wad (for your mod) on the server the
-*	decals may not appear as blood, but arrows, numbers, text, etc.
-*
-*   v1.6 - JTP10181 - 07/09/06
-*	- Added a single spray with normal headshot gore
-*	- Added new flag for extra headshot gore only
-*	- Added support for module auto loading
-*	- Added support for SvenCoop
-*	- Added minimal support for NS
-*	- Finally found proper way to hide corpses in CS/CZ/DoD
-*	- Fully ported to FakeMeta
-*
-*   v1.5 - JTP10181 - 06/27/06
-*	- Added support for ESF
-*	- Added support for TS
-*	- Added support for TFC
-*	- Tweaked a lot of numbers
-*	- Made gibs fly around more instead of in a big heap
-*	- Added support for hostages in CS
-*	- Switched all supporting mods to client_damage/death forwards
-*
-*   v1.4 - JTP10181 - 06/16/06
-*	- Switched to Pointer CVAR commands
-*	- Updated to work on "valve" mod by request
-*	- Finally finished support for DoD
-*	- Reduced the insane ammount of blood spray with gibs & extra gore enabled
-*
-*   v1.3.5 - JTP10181 - 03/05/06
-*	- Fixed possible runtime errors if player disconnects during events
-*
-*   v1.3.4 - JTP10181 - 10/25/05
-*	- Added knife to the gib_wpncheck check
-*	- Fixed bug where if all damage was from falling the player would not bleed
-*
-*   v1.3.3 - JTP10181 - 09/25/04
-*	- Made it really easy to change the weapons that cause explosion
-*	- Minor code tweaks
-*
-*   v1.3.2 - JTP10181 - 09/24/04
-*	- Fixed code to work on AMXModX 0.20
-*	- Added new CVAR to adjust the HP loss that triggers a GIB explosion
-*	- Used task for body hiding so items wont end up underground
-*
-*   v1.3.1 - JTP10181 - 06/02/04
-*	- Fixed runtime error if victim is null on a damage or death event
-*		Was happening in conjunction with superhero mod
-*		Thanks to drummeridiot25 for testing it for me
-*
-*   v1.3 - JTP
-*	- Automatic mod detection, no more recompiling for CZERO.
-*	- Decal indexes verified for CZ, they work perfectly.
-*	- Started working on DoD support
-*
-*   v1.2 - JTP
-*	- Combined various gore plugins into one that has the best features
-*		out of all of them.
-*	- Plan to maintain this plugin if any issues/requests arrise.
-*	- Added extra gory mode:
-*		Classic headshot death with the sprays shooting up (from orginal plugin_gore)
-*		More blood spraying on a gib explosion (from orginal plugin_gore)
-*		Extra blood decals on damage and deaths
-*	- Fixed divide by zero error in fx_blood and fx_gib_explode
-*	- Minor tweaks here and there to some of the numbers
-*	- Put in fix for CZERO decals from "euro" and "out" from AMX forums
-*	- Fixed runtime error when the attacker was not able to be determinted.
-*		get_user_origin was getting passed a "0" player index.
-*
-*
-*   v1.03 - ( by fizzarum ) :
-*	- Each hit now causes a blood stream depending on the positions of the
-*		agressor and the victim.
-*	- Reduce the previous headshot fx to a less extravagant thing
-*	- The gib explosion now happens after a damage higher than 110 EVEN IF
-*		the victim's head was hit
-*	- A knife kill does not cause a gib explosion
-*	- Minor changes on the bleeding effect, the position of the gibs
-*
-*   Thanks:
-*	- mike_cao for the orginal plugin
-*	- fizzarum on plugin_gore2.sma (for AMX)
-*	- euro and out (AMX forums) for posting decal numbers for CZero
-*	- SidLuke (AMX forums) for his version for DoD,
-*		I grabbed some of that code for my DoD support
-*
-**************************************************************************/
 
 //Comment this out to totally disable the GIB code
 //This can help if maps are crashing from exceeding the precache limit
@@ -400,17 +253,13 @@ public gib_wpncheck(iWeapon)
 	return false
 }
 
-// #####################################################################
-// ##                     DO NOT EDIT BELOW HERE                      ##
-// #####################################################################
-
 /************************************************************
 * PLUGIN FUNCTIONS
 ************************************************************/
 
 public plugin_init()
 {
-	register_plugin("Ultimate Gore","1.6","JTP10181")
+	register_plugin("Ultimate Gore","1.0","None")
 
 	get_modname(mod_name,31)
 
@@ -470,22 +319,6 @@ public plugin_init()
 	else {
 		blood_large_red = {19,20}
 		blood_small_red = {27,28,29,30,31,32,33,34}
-	}
-
-	//Setup jtp10181 CVAR
-	new cvarString[256], shortName[16]
-	copy(shortName,15,"gore")
-
-	register_cvar("jtp10181","",FCVAR_SERVER|FCVAR_SPONLY)
-	get_cvar_string("jtp10181",cvarString,255)
-
-	if (strlen(cvarString) == 0) {
-		formatex(cvarString,255,shortName)
-		set_cvar_string("jtp10181",cvarString)
-	}
-	else if (contain(cvarString,shortName) == -1) {
-		format(cvarString,255,"%s,%s",cvarString, shortName)
-		set_cvar_string("jtp10181",cvarString)
 	}
 }
 

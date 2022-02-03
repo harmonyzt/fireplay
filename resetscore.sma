@@ -1,17 +1,3 @@
-/*
-   This is a simple plugin I made that will just restart a players score
-   making their deaths and kills set to 0, this is to help players out a
-   little bit because they no longer have to reconnect or retry if they
-   want their score to start over, they can just type a simple command
-   
-      ---------------------------------
-       --------- MADE BY SILENTTT -----
-        ------ MADE BY SILENTTT ------
-         --  MADE BY SILENTTT -------
-        ------ MADE BY SILENTTT ------
-       --------- MADE BY SILENTTT -----
-      ---------------------------------
-*/
 
 #include <amxmodx>
 #include <amxmisc>
@@ -25,7 +11,7 @@ new pcvar_Display
 
 public plugin_init()
 {
-	register_plugin("Reset Score", "1.0", "Silenttt")
+	register_plugin("Reset Score", "1.0", "None")
 	
 	//You may type /resetscore or /restartscore
 	register_clcmd("say /rs", "reset_score")
@@ -39,7 +25,7 @@ public plugin_init()
 	//This command by default is also 0
 	//Change it to 1 in server.cfg if you want
 	//It to show who reset their scores when they do it
-	pcvar_Display = register_cvar("sv_rsdisplay", "0")
+	pcvar_Display = register_cvar("sv_rsdisplay", "1")
 	
 	if(get_cvar_num("sv_rsadvertise") == 1)
 	{

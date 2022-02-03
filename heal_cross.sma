@@ -1,23 +1,13 @@
-/*
-	Плагин: Crux Ansata
-	Автор: DUKKHAZ0R | Сайт: http://aimbat.ru/plugins/
-	
-	Описание:
-	Плагин добавляет на сервер талисман жизни, у человека имеющего его будет восстанавливаться 5 хп каждые 2 секунды.
-	В начале рануда рандомному игроку выпадает талисман жизни, если человек умирает, то любой другой сможет подобрать талисман.
-	Минимальное количество игроков для работы плагина, количество восстанавливаемого здоровья и интервал восстанавления можно настроить в исходнике.
-*/
-
 #include <amxmodx>
 #include <engine>
 
-// #define SCREENFADE				// Затемнять экран при регенерации здоровья
-#define RENDERING					// Подсветка игрока при регенерации здоровья
-#define MIN_PLAYERS 5				// Минимальное кол-во игроков для работы плагина
-#define ROUND_ACCESS 3				// С какого раунда доступен талисман
-#define GIVE_HEALTH 10 				// Кол-во выдаваемого здоровья
-#define MAX_HEALTH 150				// Максимальное кол-во выдаваемого здоровья игроку
-#define INTERVAL_REGENERATION 1.0	// Интервал между восстановлением
+// #define SCREENFADE				// fade screen when regenerating hp
+#define RENDERING					// glow player when healed
+#define MIN_PLAYERS 5				// min players for plugin to work
+#define ROUND_ACCESS 3				// since what round cross is aval 
+#define GIVE_HEALTH 10 				// amount of healed hp
+#define MAX_HEALTH 150				// maximum hp for target
+#define INTERVAL_REGENERATION 1.0	// interval or regeneration
 
 new const g_szModel[] = "models/Energy4000.mdl";
 
@@ -25,7 +15,7 @@ new g_iPlayerId, g_iRoundCounter, szName[32];
 
 public plugin_init()
 {
-	register_plugin("Crux Ansata", "1.0", "DUKKHAZ0R");
+	register_plugin("Heal Cross", "1.0", "None");
 	
 	register_touch("Energy4000", "player", "fw_TouchEntity");
 	
